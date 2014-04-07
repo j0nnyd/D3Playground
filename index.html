@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!--
+      These are some scaling and rendering options that help
+      out bootstrap (and also make your life a little easier)
+    -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+      An adequate title for an adequate html doc
+    -->
+    <title>D3 Demo/Quick Tutorial for J0nnyD</title>
+    <!--
+      Import bootstrap default css.
+      We are just quick and dirtying the prettiness of the interface
+      so this is adequate.
+    -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!--
+      Import the cover page styling css
+    -->
+    <link rel="stylesheet" href="cover.css">
+  </head>
+	<style>
+
+		.counties {
+			fill: none;
+		}
+
+		.states {
+			fill: none;
+			stroke: #fff;
+			stroke-linejoin: round;
+		}
+
+		.d3-tip {
+			line-height: 1;
+			font-weight: bold;
+			padding: 12px;
+			background: rgba(0, 0, 0, 0.8);
+			color: #fff;
+			border-radius: 2px;
+		}
+		
+		/* Creates a small triangle extender for the tooltip */
+		.d3-tip:after {
+			box-sizing: border-box;
+			display: inline;
+			font-size: 10px;
+			width: 100%;
+			line-height: 1;
+			color: rgba(0, 0, 0, 0.8);
+			content: "\25BC";
+			position: absolute;
+			text-align: center;
+		}
+
+		/* Style northward tooltips differently */
+		.d3-tip.n:after {
+			margin: -1px 0 0 0;
+			top: 100%;
+			left: 0;
+		}
+
+</style>
+  <body>
+    <!--
+      Style the page based on bootstrap single page demo
+      Because that is exactly what this is.
+      Plus, it is pretty
+    -->
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <!--
+            The header of the page
+          -->
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">D3 Example</h3>
+              <ul class="nav masthead-nav">
+                <li class="active"><a href="#">Home</a></li>
+              </ul>
+            </div>
+          </div>
+          <!--
+            The meat of the page
+          -->
+          <div class="inner cover">
+            <h1 class="cover-heading">Graph heading</h1>
+            <p class="lead">Description of graph</p>
+            <div id="graph">
+            </div>
+          </div>
+          <!--
+            The page footer
+          -->
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Copyright &copy; 2014 Ian Zachary Ledrick aka Thisita. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
+      Using direct link for quick use. You should host this yourself though.
+      Try to put scripts at the end of your body tag to improve page load
+      speeds from a UX perspective. It makes the page feel more responsive.
+      Do remember that this requires extra planning though.
+      
+      Importing the jquery library for some helper functions if we need them.
+      Importing bootstrap for some quick styling.
+      Importing d3 for the demo :D
+    -->
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="d3.js" charset="utf-8"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+		<script src="tip.js"></script>
+    <script src="choropleth.js"></script>
+  </body>
+</html>
