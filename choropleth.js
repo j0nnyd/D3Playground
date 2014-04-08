@@ -53,7 +53,7 @@ function update(err, map, data) {
       
     // Mouse events
     .on('mouseover', function(d){
-      d3.select(this).attr('fill', 'red');
+      d3.select(this).style('fill', 'red');
       div.transition().duration(300)
       .style("opacity", 1)
       div.text(stateId[d.properties.states] + " : " + amount[d.properties.states])
@@ -61,7 +61,7 @@ function update(err, map, data) {
       .style("top", (d3.event.pageY - 30) + "px");
     })
     .on('mouseout', function(){
-      d3.select(this).attr('fill', 'none');
+      d3.select(this).style('fill', 'none');
       div.transition().duration(300)
       .style("opacity", 0);
     });
