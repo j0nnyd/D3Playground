@@ -37,11 +37,16 @@ function update(err, map, data) {
   if(err) alert(err);
   
   var stateId = {};
+  var donors = {};
+  var alumniDonors = {};
   var amount = {};
   
   data.forEach(function(d) {
-    stateId[StateToFips(d.STATE)] = d.STATE;
-    amount[StateToFips(d.STATE)] = +d.AMOUNT;
+    var id = StateToFips(d.STATE);
+    stateId[id] = d.STATE;
+    donors[id] = +d.DONORS;
+    alumniDonors[id] = +d.ALUMNI_DONORS;
+    amount[id] = +d.AMOUNT;
   });
   svg.append("g")
     .attr("class", "states")
@@ -56,7 +61,7 @@ function update(err, map, data) {
       d3.select(this).style('fill', 'red');
       div.transition().duration(300)
       .style("opacity", 1)
-      div.text(stateId[d.id] + " : " + amount[d.id])
+      div.html(stateId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY - 30) + "px");
     })
