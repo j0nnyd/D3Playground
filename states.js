@@ -5,8 +5,8 @@ var width = 960,
 // Create an instance of the layout engine
 var map = d3.map();
 
-var div = d3.select("body").append("div")   
-  .attr("class", "tooltip")               
+var div = d3.select("body").append("div")
+  .attr("class", "tooltip")
   .style("opacity", 0);
 
 // Create an instance of the geo projection engine
