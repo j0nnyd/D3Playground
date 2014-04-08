@@ -11,8 +11,8 @@ var div = d3.select("body").append("div")
 
 // Create an instance of the geo projection engine
 // This does all the awesome math for rendering the map
-var projection = d3.geo.albersUsa()
-  .scale(1280)
+var projection = d3.geo.mercator()
+  .scale(167)
   .translate([width / 2, height / 2]);
 
 // Create the path renderer engine for the map projection to be rendered with
@@ -28,7 +28,7 @@ var svg = d3.select("#graph").append("svg")
 // Grab the geo data
 queue()
   .defer(d3.json, "countries.json")
-	.defer(d3.csv, "usData.csv")
+	.defer(d3.csv, "internationalData.csv")
   .await(update);
 
 function update(err, map, data) {
@@ -36,22 +36,22 @@ function update(err, map, data) {
   console.log(map);
   if(err) alert(err);
   
-  var stateId = {};
+  var countryId = {};
   var donors = {};
   var alumniDonors = {};
   var amount = {};
   
   data.forEach(function(d) {
-    var id = StateToFips(d.STATE);
-    stateId[id] = d.STATE;
+    var id = CountryToISO(d.COUNTRY);
+    countryId[id] = d.COUNTRY;
     donors[id] = +d.DONORS;
     alumniDonors[id] = +d.ALUMNI_DONORS;
     amount[id] = +d.AMOUNT;
   });
   svg.append("g")
-    .attr("class", "states")
+    .attr("class", "countries")
     .selectAll("path")
-      .data(topojson.feature(map, map.objects.states).features)
+      .data(topojson.feature(map, map.objects.countries).features)
       .enter().append("path")
         .attr("d", path)
       .style('fill', 'none')
@@ -61,7 +61,7 @@ function update(err, map, data) {
       d3.select(this).style('fill', 'red');
       div.transition().duration(300)
       .style("opacity", 1)
-      div.html(stateId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
+      div.html(countryId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY - 30) + "px");
     })
@@ -104,6 +104,6 @@ var fips = {
 // Function to use the lookup table to do the conversion
 // sc argument is a string containing the two char
 // state abbreviation
-var StateToFips = function(sc) {
+var CountryToISO = function(sc) {
 	return +fips[sc];
 };
