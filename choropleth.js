@@ -5,10 +5,9 @@ var width = 960,
 // Create an instance of the layout engine
 var map = d3.map();
 
-// Set values for different colors for the states
-var quantize = d3.scale.quantize()
-    .domain([0, .15])
-    .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+var div = d3.select("body").append("div")   
+  .attr("class", "tooltip")               
+  .style("opacity", 0);
 
 // Create an instance of the geo projection engine
 // This does all the awesome math for rendering the map
@@ -20,55 +19,52 @@ var projection = d3.geo.albersUsa()
 var path = d3.geo.path()
   .projection(projection);
 
-// Tooltip	
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-  .html(function(d) {
-    return "<strong>Amount:</strong> <span style='color:red'>" + d.AMOUNT + "</span>";
-  })
 
 // Create the graph svg element
 var svg = d3.select("#graph").append("svg")
   .attr("width", width)
   .attr("height", height);
-	
-svg.call(tip);
   
 // Grab the geo data
 queue()
   .defer(d3.json, "us.json")
-	.defer(d3.csv, "usData.csv", function(d) {map.set(StateToFips(d.STATE), +d.AMOUNT); })
+	.defer(d3.csv, "usData.csv")
   .await(update);
-	
-var myMouseOverFunction = function() {
-	var state = d3.select(this);
-	state.attr("fill", "red" );
-	 
-	// Show tooltip
-	state.on('mouseover', tip.show);
-};
 
-var myMouseOutFunction = function() {
-	var state = d3.select(this);
-	state.attr("fill", "none" );
-	
-	// Hide tooltip
-	state.on('mouseoout', tip.hide);
-};
-
-function update(err, us) {
+function update(err, map, data) {
   console.log(err);
-  console.log(us);
+  console.log(map);
   if(err) alert(err);
+  
+  var stateId = {};
+  var amount = {};
+  
+  data.forEach(function(d) {
+    stateId[StateToFips(d.STATE)] = StateToFips(d.STATE);
+    amount[StateToFips(d.STATE)] = +d.AMOUNT;
+  });
   svg.append("g")
     .attr("class", "states")
     .selectAll("path")
-      .data(topojson.feature(us, us.objects.states).features)
+      .data(topojson.feature(map, map.objects.states).features)
       .enter().append("path")
         .attr("d", path)
-			.on('mouseover', myMouseOverFunction)
-			.on('mouseout', myMouseOutFunction);
+      .style('fill', 'none')
+      
+    // Mouse events
+    .on('mouseover', function(d){
+      d3.select(this).attr('fill', 'red');
+      div.transition().duration(300)
+      .style("opacity", 1)
+      div.text(stateId[d.properties.states] + " : " + amount[d.properties.states])
+      .style("left", (d3.event.pageX) + "px")
+      .style("top", (d3.event.pageY - 30) + "px");
+    })
+    .on('mouseout', function(){
+      d3.select(this).attr('fill', 'none');
+      div.transition().duration(300)
+      .style("opacity", 0);
+    });
 };
 
 d3.select(self.frameElement).style("height", height + "px");
