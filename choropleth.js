@@ -59,11 +59,13 @@ function update(err, map, data) {
     // Mouse events
     .on('mouseover', function(d){
       d3.select(this).style('fill', 'red');
-      div.transition().duration(300)
-      .style("opacity", 1)
-      div.html(stateId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
-      .style("left", (d3.event.pageX) + "px")
-      .style("top", (d3.event.pageY - 30) + "px");
+      if(stateId[d.id]){
+        div.transition().duration(300)
+        .style("opacity", 1)
+        div.html(stateId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 30) + "px");
+      }
     })
     .on('mouseout', function(){
       d3.select(this).style('fill', 'none');

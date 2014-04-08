@@ -12,8 +12,12 @@ var div = d3.select("body").append("div")
 // Create an instance of the geo projection engine
 // This does all the awesome math for rendering the map
 var projection = d3.geo.mercator()
-  .scale(167)
-  .translate([width / 2, height / 2]);
+  .translate([0, 0])
+  .scale(width / 2 / Math.PI);
+  
+var zoom = d3.behavior.zoom()
+  .scaleExtent([1, 8])
+  .on("zoom", move);
 
 // Create the path renderer engine for the map projection to be rendered with
 var path = d3.geo.path()
@@ -22,6 +26,18 @@ var path = d3.geo.path()
 
 // Create the graph svg element
 var svg = d3.select("#graph").append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g")
+  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+  .call(zoom);
+  
+var g = svg.append("g");
+
+svg.append("rect")
+  .attr("class", "overlay")
+  .attr("x", -width / 2)
+  .attr("y", -height / 2)
   .attr("width", width)
   .attr("height", height);
   
@@ -48,8 +64,8 @@ function update(err, map, data) {
     alumniDonors[id] = +d.ALUMNI_DONORS;
     amount[id] = +d.AMOUNT;
   });
-  svg.append("g")
-    .attr("class", "countries")
+
+  g.attr("class", "countries")
     .selectAll("path")
       .data(topojson.feature(map, map.objects.countries).features)
       .enter().append("path")
@@ -59,11 +75,13 @@ function update(err, map, data) {
     // Mouse events
     .on('mouseover', function(d){
       d3.select(this).style('fill', 'red');
-      div.transition().duration(300)
-      .style("opacity", 1)
-      div.html(countryId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
-      .style("left", (d3.event.pageX) + "px")
-      .style("top", (d3.event.pageY - 30) + "px");
+      if(countryId[d.id]){
+        div.transition().duration(300)
+        .style("opacity", 1)
+        div.html(countryId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 30) + "px");
+      }
     })
     .on('mouseout', function(){
       d3.select(this).style('fill', 'none');
@@ -71,6 +89,15 @@ function update(err, map, data) {
       .style("opacity", 0);
     });
 };
+
+function move() {
+  var t = d3.event.translate,
+      s = d3.event.scale;
+  t[0] = Math.min(width / 2 * (s - 1), Math.max(width / 2 * (1 - s), t[0]));
+  t[1] = Math.min(height / 2 * (s - 1) + 230 * s, Math.max(height / 2 * (1 - s) - 230 * s, t[1]));
+  zoom.translate(t);
+  g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
+}
 
 d3.select(self.frameElement).style("height", height + "px");
 
