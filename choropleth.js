@@ -54,12 +54,18 @@ function update(err, map, data) {
       .data(topojson.feature(map, map.objects.states).features)
       .enter().append("path")
         .attr("d", path)
-      .style('fill', 'none')
+      .style('fill', function(d){
+        if(stateId[d.id]){
+          return 'grey';
+        } else {
+          return 'none';
+        }
+      })
       
     // Mouse events
     .on('mouseover', function(d){
-      d3.select(this).style('fill', 'red');
       if(stateId[d.id]){
+        d3.select(this).style('fill', 'red');
         div.transition().duration(300)
         .style("opacity", 1)
         div.html(stateId[d.id] + "<br />Donors: " + donors[d.id] + "<br />Alumni Donors: " + alumniDonors[d.id] + "<br />Amount: $" + amount[d.id])
@@ -67,10 +73,12 @@ function update(err, map, data) {
         .style("top", (d3.event.pageY - 30) + "px");
       }
     })
-    .on('mouseout', function(){
-      d3.select(this).style('fill', 'none');
-      div.transition().duration(300)
-      .style("opacity", 0);
+    .on('mouseout', function(d){
+      if(stateId[d.id]){
+        d3.select(this).style('fill', 'grey');
+        div.transition().duration(300)
+        .style("opacity", 0);
+      }
     });
 };
 

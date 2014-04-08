@@ -57,7 +57,6 @@ function update(err, map, data) {
       .enter().append("path")
         .attr("d", path)
       .style('fill', function(d){
-        console.log(d.id);
         if(d.id > 21000 && d.id < 22000){
           return 'grey';
         } else {
