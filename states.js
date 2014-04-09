@@ -45,7 +45,7 @@ function update(err, map, data) {
     var id = StateToFips(d.STATE);
     stateId[id] = d.STATE;
     donors[id] = +d.DONORS;
-    alumniDonors[id] = +d.ALUMNI_DONORS;
+    alumniDonors[id] = +d.AL_DONORS;
     amount[id] = +d.AMOUNT;
   });
   svg.append("g")
