@@ -12,7 +12,7 @@ var div = d3.select("body").append("div")
 // Create an instance of the geo projection engine
 // This does all the awesome math for rendering the map
 var projection = d3.geo.albersUsa()
-  .scale(1280)
+  .scale(1200)
   .translate([width / 2, height / 2]);
 
 // Create the path renderer engine for the map projection to be rendered with
